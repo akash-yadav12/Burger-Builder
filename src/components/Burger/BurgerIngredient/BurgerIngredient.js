@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import classes from './BurgerIngredient.module.css'
-import { render } from '@testing-library/react'
+
 
 class BurgerIngredient extends Component {
 
