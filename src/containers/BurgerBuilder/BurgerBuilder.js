@@ -34,12 +34,20 @@ class BurgerBuilder extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props)
     axios.get('https://brave-aileron-310307-default-rtdb.firebaseio.com/ingredients.json')
       .then(res => {
         console.log(res)
         this.setState({ ingredients: res.data })
       })
       .catch(err => { console.log(err); this.setState({ error: true }) })
+    // const updateIng = {
+    //   salad: 0,
+    //   bacon: 0,
+    //   cheese: 0,
+    //   meat: 0
+    // }
+    // this.setState({ ingredients: updateIng })
   }
 
   updatePurhcaseState(ingredients) {
@@ -101,36 +109,19 @@ class BurgerBuilder extends Component {
   }
 
   purchaseContinueHandler = () => {
-    this.setState({ loading: true })
     // alert('You Continue!')
-    const order = {
-      ingredient: this.state.ingredients,
-      price: this.state.totalPrice,
-      customer: {
-        name: 'Akash Yadav',
-        address: {
-          street: 'Mumbai',
-          zipCode: '400079',
-          country: 'India'
-        },
-        email: 'test@test.com',
-      },
-      deliveryMethod: 'fastest'
+
+    const queryParams = []
+    for (let i in this.state.ingredients) {
+      queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]))
     }
-    axios.post('/orders.json', order)
-      .then(res => {
-        console.log(res)
-        this.setState({
-          loading: false,
-          purchasing: false
-        })
-      })
-      .catch(err => {
-        this.setState({
-          loading: false,
-          purchasing: false
-        })
-      })
+    queryParams.push('price=' + this.state.totalPrice)
+    const queryString = queryParams.join('&')
+    this.props.history.push({
+      pathname: '/checkout',
+      search: '?' + queryString
+    })
+
   }
 
   render() {
