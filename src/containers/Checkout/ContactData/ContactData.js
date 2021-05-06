@@ -22,6 +22,7 @@ class ContactData extends Component {
         validation: {
           required: true
         },
+        valid: false,
         touched: false
       },
       street: {
@@ -103,10 +104,11 @@ class ContactData extends Component {
     const order = {
       ingredient: this.props.ingredients,
       price: this.props.price,
-      orderData: formData
+      orderData: formData,
+      userId: this.props.userId
     }
 
-    this.props.onOrderBurger(order)
+    this.props.onOrderBurger(order, this.props.token)
 
   }
 
@@ -168,8 +170,8 @@ class ContactData extends Component {
 
         {formElementsArray.map(formElement => (
           <Input
-            invalid={!formElement.config.valid}
             key={formElement.id}
+            invalid={!formElement.config.valid}
             elementType={formElement.config.elementType}
             elementConfig={formElement.config.elementConfig}
             value={formElement.config.value}
@@ -196,13 +198,15 @@ const mapStateToProps = state => {
   return {
     ingredients: state.burgerBuilder.ingredients,
     price: state.burgerBuilder.totalPrice,
-    loading: state.order.loading
+    loading: state.order.loading,
+    token: state.auth.token,
+    userId: state.auth.userId
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    onOrderBurger: (orderData) => dispatch(actions.purchaseBurger(orderData))
+    onOrderBurger: (orderData, token) => dispatch(actions.purchaseBurger(orderData, token))
   }
 }
 
